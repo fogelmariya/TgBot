@@ -1,0 +1,64 @@
+buildscript {
+    ext.kotlin_version = '1.2.41'
+
+    repositories {
+        mavenCentral()
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:2.2.3'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+group 'post.telegram.bot'
+version '1.0'
+
+apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin'
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    gsonVersion = "2.8.2"
+    toothpickVersion = "1.1.3"
+    morphiaVersion = "1.3.2"
+    sparkVersion = "1.0.0-alpha"
+}
+
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    //Json
+    implementation "com.google.code.gson:gson:$gsonVersion"
+    //Morphia
+    compile group: 'org.mongodb.morphia', name: 'morphia', version: "$morphiaVersion"
+    //DI
+    compile 'com.github.stephanenicolas.toothpick:toothpick-runtime:1.1.3'
+    kapt 'com.github.stephanenicolas.toothpick:toothpick-compiler:1.1.3'
+    //Ability-Bot
+    compile "org.telegram:telegrambots-abilities:3.6"
+    //Retrofit2
+    compile 'com.squareup.retrofit2:retrofit:2.4.0'
+    //GsonConverter
+    compile 'com.squareup.retrofit2:converter-gson:2.3.0'
+}
+
+compileKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+compileTestKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+
+task fatJar(type: Jar) {
+    manifest {
+        attributes 'Implementation-Title': 'Gradle Jar File Example',
+                'Implementation-Version': version,
+                'Main-Class': 'com.kawabanga.api.Main'
+    }
+    baseName = project.name + '-all'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
